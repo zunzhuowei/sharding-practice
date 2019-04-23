@@ -81,35 +81,6 @@ public class SwaggerConfig {
                 .build().pathMapping("/");
     }
 
-    /**
-     *  openApi 控制层 API
-     */
-    @Bean
-    public Docket openApiDocket() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("OPEN API")
-                .apiInfo(apiInfo())
-                .host(getHost()) // 接口请求域名/ip地址
-                .select()
-                .paths(openApiPathsRex())
-                .build().pathMapping("/");
-    }
-
-    /**
-     *  测试 控制层 API
-     */
-    @Bean
-    public Docket testDocket() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("TEST")
-                .apiInfo(apiInfo())
-                .host(getHost()) // 接口请求域名/ip地址
-                .select()
-                //.apis(RequestHandlerSelectors.basePackage("com.capsule.web2.controller")) 指定controller扫描位置
-                .paths(testPathsRex())
-                .build().pathMapping("/");
-    }
-
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("API文档")
@@ -133,20 +104,6 @@ public class SwaggerConfig {
     private Predicate<String> apiPathsRex() {
         return or(
                 regex(API_PATH_REGEX)
-        );
-    }
-
-    // 以 /openApi 开头的所有访问
-    private Predicate<String> openApiPathsRex() {
-        return or(
-                regex(OPEN_API_PATH_REGEX)
-        );
-    }
-
-    // 以 /test 开头的所有访问
-    private Predicate<String> testPathsRex() {
-        return or(
-                regex(TEST_PATH_REGEX)
         );
     }
 
