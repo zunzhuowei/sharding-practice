@@ -1,0 +1,105 @@
+server:
+  servlet:
+    context-path: /
+  port: 5567
+
+game:
+  qs:
+    mysql:
+      url: xxx.xx.xxx.xxx
+      username: xxxxxx
+      password: xxxxxx
+    signSecret: 123321123     # 接口请求签名秘钥
+    jwtSecret: 123321123     # 用于签发jwt的秘钥
+    swagger:
+      scan: com.game.qs
+      hosts: xxx.xx.xxx.xxx:8008,127.0.0.1:5567
+      index: 1
+
+logging:
+  level:
+    root: info
+    io:   # 指定包输入日志
+      swagger: error
+    springfox:
+      documentation:
+        spring:
+          web:
+            readers:
+              operation: warn
+    com:
+      game:
+        qs: trace
+
+sharding:
+  jdbc:
+    datasource:
+      names: master0,master1,master0slave0,master0slave1,master1slave0,master1slave1
+      master0slave1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_01?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+      master0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_02?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+      master1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_03?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+      master1slave1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_04?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+      master1slave0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_05?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+      master0slave0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_06?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+    config:
+      sharding:
+        tables:
+          t_order_item:
+            table-strategy:
+              inline:
+                sharding-column: order_id
+                algorithm-expression: t_order_item$->{order_id % 2}
+            key-generator-column-name: order_item_id
+            actual-data-nodes: ds$->{0..1}.t_order_item$->{0..1}
+          t_order:
+            table-strategy:
+              inline:
+                sharding-column: order_id
+                algorithm-expression: t_order$->{order_id % 2}
+            key-generator-column-name: order_id
+            actual-data-nodes: ds$->{0..1}.t_order$->{0..1}
+        binding-tables: t_order,t_order_item
+
+        default-database-strategy:
+          inline:
+            sharding-column: user_id
+            algorithm-expression: master$->{user_id % 2}
+
+        master-slave-rules:
+          ds0:
+            slave-data-source-names: master0slave0, master0slave1
+            master-data-source-name: master0
+          ds1:
+            slave-data-source-names: master1slave0, master1slave1
+            master-data-source-name: master1
+        broadcast-tables: t_config

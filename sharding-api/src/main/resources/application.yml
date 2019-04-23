@@ -6,7 +6,7 @@ mybatis:
 
 spring:
   profiles:
-    active: dev
+    active: local
   application:
     name: sharding-practice-service
   mvc:
