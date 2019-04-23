@@ -14,10 +14,10 @@
         <module>sharding-common</module>
         <module>sharding-mapper</module>
         <module>sharding-model</module>
-        <module>sharding-api</module>
         <module>sharding-config</module>
-        <module>sharding-redis</module>
+        <module>sharding-api</module>
         <module>sharding-api-service</module>
+        <!--<module>sharding-redis</module>-->
     </modules>
 
     <parent>

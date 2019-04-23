@@ -1,0 +1,45 @@
+server:
+  servlet:
+    context-path: /
+  port: 5567
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource            # 当前数据源操作类型
+    driver-class-name: com.mysql.jdbc.Driver              # mysql驱动包
+    url: jdbc:mysql://xxx.xx.xxx.xxx:3306/one_account?useSSL=false&useUnicode=true&characterEncoding=utf-8   # 数据库名称
+    username: xxxxxx
+    password: xxxxxx
+    dbcp2:
+      min-idle: 5                                           # 数据库连接池的最小维持连接数
+      initial-size: 5                                       # 初始化连接数
+      max-total: 5                                          # 最大连接数
+      max-wait-millis: 200                                # 等待连接获取的最大超时时间
+      validation-query: select 1
+      validation-query-timeout: 5000
+      test-while-idle: false
+
+game:
+  qs:
+    signSecret: 123321123     # 接口请求签名秘钥
+    jwtSecret: 123321123     # 用于签发jwt的秘钥
+    swagger:
+      scan: com.game.qs
+      hosts: xxx.xx.xxx.xxx:8008,127.0.0.1:5567
+      index: 1
+
+logging:
+  level:
+    root: info
+    io:   # 指定包输入日志
+      swagger: error
+    springfox:
+      documentation:
+        spring:
+          web:
+            readers:
+              operation: warn
+    com:
+      game:
+        qs: trace
+
