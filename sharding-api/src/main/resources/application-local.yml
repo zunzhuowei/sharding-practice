@@ -35,16 +35,22 @@ sharding:
   jdbc:
     datasource:
       names: master0,master1,master0slave0,master0slave1,master1slave0,master1slave1
-      master0slave1:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_01?useSSL=false&useUnicode=true&characterEncoding=utf-8
-        username: ${game.qs.mysql.username}
-        password: ${game.qs.mysql.password}
       master0:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_02?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+      master0slave0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_06?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
+      master0slave1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_01?useSSL=false&useUnicode=true&characterEncoding=utf-8
         username: ${game.qs.mysql.username}
         password: ${game.qs.mysql.password}
       master1:
@@ -53,22 +59,16 @@ sharding:
         url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_03?useSSL=false&useUnicode=true&characterEncoding=utf-8
         username: ${game.qs.mysql.username}
         password: ${game.qs.mysql.password}
-      master1slave1:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_04?useSSL=false&useUnicode=true&characterEncoding=utf-8
-        username: ${game.qs.mysql.username}
-        password: ${game.qs.mysql.password}
       master1slave0:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_05?useSSL=false&useUnicode=true&characterEncoding=utf-8
         username: ${game.qs.mysql.username}
         password: ${game.qs.mysql.password}
-      master0slave0:
+      master1slave1:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_06?useSSL=false&useUnicode=true&characterEncoding=utf-8
+        url: jdbc:mysql://${game.qs.mysql.url}:3306/sharding_04?useSSL=false&useUnicode=true&characterEncoding=utf-8
         username: ${game.qs.mysql.username}
         password: ${game.qs.mysql.password}
     config:
