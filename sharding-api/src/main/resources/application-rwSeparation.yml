@@ -37,23 +37,23 @@ sharding:
     datasource:
       names: master,slave0,slave1
       slave0:
-        password:
-        type: org.apache.commons.dbcp.BasicDataSource
+        type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://localhost:3306/slave0
-        username: root
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
       slave1:
-        password:
-        type: org.apache.commons.dbcp.BasicDataSource
+        type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://localhost:3306/slave1
-        username: root
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
       master:
-        password:
-        type: org.apache.commons.dbcp.BasicDataSource
+        type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://localhost:3306/master
-        username: root
+        username: ${game.qs.mysql.username}
+        password: ${game.qs.mysql.password}
     config:
       masterslave:
         load-balance-algorithm-type: round_robin
