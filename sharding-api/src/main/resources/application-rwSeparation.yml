@@ -1,0 +1,65 @@
+## 读写分离
+server:
+  servlet:
+    context-path: /
+  port: 5569
+
+game:
+  qs:
+    mysql:
+      url: xxx.xx.xxx.xxx
+      username: xxxxxx
+      password: xxxxxx
+    signSecret: 123321123     # 接口请求签名秘钥
+    jwtSecret: 123321123     # 用于签发jwt的秘钥
+    swagger:
+      scan: com.game.qs
+      hosts: xxx.xx.xxx.xxx:8008,127.0.0.1:5567
+      index: 1
+
+logging:
+  level:
+    root: info
+    io:   # 指定包输入日志
+      swagger: error
+    springfox:
+      documentation:
+        spring:
+          web:
+            readers:
+              operation: warn
+    com:
+      game:
+        qs: trace
+
+sharding:
+  jdbc:
+    datasource:
+      names: master,slave0,slave1
+      slave0:
+        password:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/slave0
+        username: root
+      slave1:
+        password:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/slave1
+        username: root
+      master:
+        password:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/master
+        username: root
+    config:
+      masterslave:
+        load-balance-algorithm-type: round_robin
+        name: ms
+        slave-data-source-names: slave0,slave1
+        master-data-source-name: master
+      props:
+        sql:
+          show: true

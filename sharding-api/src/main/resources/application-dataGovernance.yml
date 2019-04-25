@@ -1,0 +1,87 @@
+## 数据治理
+server:
+  servlet:
+    context-path: /
+  port: 5570
+
+game:
+  qs:
+    mysql:
+      url: xxx.xx.xxx.xxx
+      username: xxxxxx
+      password: xxxxxx
+    signSecret: 123321123     # 接口请求签名秘钥
+    jwtSecret: 123321123     # 用于签发jwt的秘钥
+    swagger:
+      scan: com.game.qs
+      hosts: xxx.xx.xxx.xxx:8008,127.0.0.1:5567
+      index: 1
+
+logging:
+  level:
+    root: info
+    io:   # 指定包输入日志
+      swagger: error
+    springfox:
+      documentation:
+        spring:
+          web:
+            readers:
+              operation: warn
+    com:
+      game:
+        qs: trace
+
+
+sharding:
+  jdbc:
+    datasource:
+      ds0:
+        password:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ds0
+        username: root
+      ds1:
+        password:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ds1
+        username: root
+      names: ds,ds0,ds1
+      ds:
+        password:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: org.h2.Driver
+        url: jdbc:mysql://localhost:3306/ds
+        username: root
+    config:
+      orchestration:
+        registry:
+          namespace: orchestration-spring-boot-sharding-test
+          server-lists: localhost:2181
+        name: spring_boot_ds_sharding
+        overwrite: true
+      sharding:
+        default-data-source-name: ds
+        binding-tables: t_order,t_order_item
+        tables:
+          t_order_item:
+            table-strategy:
+              inline:
+                sharding-column: order_id
+                algorithm-expression: t_order_item$->{order_id % 2}
+            key-generator-column-name: order_item_id
+            actual-data-nodes: ds$->{0..1}.t_order_item$->{0..1}
+          t_order:
+            table-strategy:
+              inline:
+                sharding-column: order_id
+                algorithm-expression: t_order$->{order_id % 2}
+            key-generator-column-name: order_id
+            actual-data-nodes: ds$->{0..1}.t_order$->{0..1}
+        default-database-strategy:
+          inline:
+            sharding-column: user_id
+            algorithm-expression: master$->{user_id % 2}
+        broadcast-tables: t_config
